@@ -1,5 +1,6 @@
 package com.stock.simulator.core;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class SimulatorEngine {
         while (isRunning) {
             simulateMarket();
             try {
-                Thread.sleep(1000); // Pause for a second before the next market update
+                Thread.sleep(5000); // Pause for a second before the next market update
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 System.out.println("Simulation interrupted");
@@ -44,5 +45,25 @@ public class SimulatorEngine {
     private double simulatePriceChange(double currentPrice) {
         // Random price fluctuation logic here
         return currentPrice * (1 + (Math.random() - 0.5) * 0.1); // Fluctuate up to ±5%
+    }
+
+    public void displayTopFiveStocks() {
+        System.out.println("Top 5 Stocks:");
+        marketStocks.values().stream()
+                .sorted(Comparator.comparingDouble(Stock::getCurrentPrice).reversed())
+                .limit(5)
+                .forEach(stock -> System.out.println(stock.getSymbol() + ": " + String.format("%.2f", stock.getCurrentPrice()) + ": " + String.format("%.2f%%", stock.getAllTimePriceChange())));
+    }
+
+    public void displayAllStocks() {
+        System.out.println("Stock - Current Price - Price Change (%)");
+        marketStocks.values()
+                .forEach(stock -> {
+                    System.out.printf("%s - $%.2f - %.2f%%\n", stock.getSymbol(), stock.getCurrentPrice(), stock.getAllTimePriceChange());
+                });
+    }
+
+    public Stock getStock(String symbol) {
+        return marketStocks.get(symbol);
     }
 }

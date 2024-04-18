@@ -15,7 +15,7 @@ public class Stock {
         this.name = name;
         this.currentPrice = startingPrice;
         this.historicalPrices = new TreeMap<>();
-        this.historicalPrices.put(java.time.LocalDate.now().toString(), startingPrice);
+        this.historicalPrices.put(java.time.LocalDateTime.now().toString(), startingPrice);
     }
 
     public String getName() {
@@ -41,7 +41,7 @@ public class Stock {
     public void setCurrentPrice(double currentPrice) {
         this.currentPrice = currentPrice;
 
-        this.historicalPrices.put(java.time.LocalDate.now().toString(), currentPrice);
+        this.historicalPrices.put(java.time.LocalDateTime.now().toString(), currentPrice);
     }
 
     public TreeMap<String, Double> getHistoricalPrices() {
@@ -54,7 +54,7 @@ public class Stock {
         }
 
         // Get the first entry in the TreeMap (earliest date)
-        Optional<Double> firstPrice = historicalPrices.values().stream().findFirst();
+        Optional<Double> firstPrice = getHistoricalPrices().values().stream().findFirst();
 
         double firstRecordedPrice = firstPrice.get();
         // Calculate percentage change
