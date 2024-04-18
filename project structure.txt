@@ -1,0 +1,48 @@
+StockMarketSimulator/
+│
+├── src/
+│   ├── com/
+│   │   ├── stock/
+│   │   │   ├── simulator/
+│   │   │   │   ├── core/
+│   │   │   │   │   ├── SimulatorEngine.java
+│   │   │   │   │   ├── Stock.java
+│   │   │   │   │   └── Portfolio.java
+│   │   │   │   │
+│   │   │   │   ├── data/
+│   │   │   │   │   ├── DataManager.java
+│   │   │   │   │   ├── DataProvider.java
+│   │   │   │   │   └── DataSimulator.java
+│   │   │   │   │
+│   │   │   │   ├── user/
+│   │   │   │   │   ├── User.java
+│   │   │   │   │   ├── UserManager.java
+│   │   │   │   │   └── AuthenticationService.java
+│   │   │   │   │
+│   │   │   │   ├── strategies/
+│   │   │   │   │   ├── TradingStrategy.java
+│   │   │   │   │   └── SimpleMovingAverageStrategy.java
+│   │   │   │   │
+│   │   │   │   ├── utils/
+│   │   │   │   │   ├── Logger.java
+│   │   │   │   │   └── ConfigLoader.java
+│   │   │   │   │
+│   │   │   │   └── Main.java
+│   │   │   │
+│   │   └── resources/
+│   │       └── config.properties
+│   │
+├── test/
+│   ├── java/
+│   │   └── simulator/
+│   │       ├── core/
+│   │       ├── data/
+│   │       ├── user/
+│   │       └── strategies/
+│   │
+├── lib/
+│   └── (external libraries if needed)
+│
+├── build.gradle or pom.xml (if using Gradle or Maven)
+│
+└── README.md
