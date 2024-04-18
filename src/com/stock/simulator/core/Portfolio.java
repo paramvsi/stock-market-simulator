@@ -5,11 +5,13 @@ import java.util.Map;
 
 public class Portfolio {
     private double cash;
-    private Map<Stock, Integer> holdings;
+    private final Map<Stock, Integer> holdings;
+    private double totalInvested;
 
     public Portfolio(double initialCash) {
         this.holdings = new HashMap<>();
         this.cash = initialCash;
+        this.totalInvested = 0;
     }
 
     public double getCash() {
@@ -31,6 +33,7 @@ public class Portfolio {
 
         holdings.merge(stock, quantity, Integer::sum);  // Add the stock or increment the quantity
         cash -= price * quantity;  // Deduct the cost from cash
+        totalInvested += price * quantity;
     }
 
 
@@ -55,5 +58,11 @@ public class Portfolio {
         return totalValue;
     }
 
-
+    public double calculateROI() {
+        double currentValue = getTotalValue();
+        if (totalInvested > 0) {
+            return ((currentValue - totalInvested) / totalInvested) * 100;
+        }
+        return 0;  // Return 0 if no investment was made to avoid division by zero
+    }
 }
