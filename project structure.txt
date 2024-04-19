@@ -10,9 +10,7 @@ StockMarketSimulator/
 │   │   │   │   │   └── Portfolio.java
 │   │   │   │   │
 │   │   │   │   ├── data/
-│   │   │   │   │   ├── DataManager.java
-│   │   │   │   │   ├── DataProvider.java
-│   │   │   │   │   └── DataSimulator.java
+│   │   │   │   │   └── DataGenerator.java
 │   │   │   │   │
 │   │   │   │   ├── user/
 │   │   │   │   │   ├── User.java

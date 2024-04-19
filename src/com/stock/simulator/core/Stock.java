@@ -1,5 +1,7 @@
 package com.stock.simulator.core;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
 
@@ -46,6 +48,10 @@ public class Stock {
 
     public TreeMap<String, Double> getHistoricalPrices() {
         return historicalPrices;
+    }
+
+    public List<Double> getOrderedPriceList() {
+        return new ArrayList<>(historicalPrices.values());
     }
 
     public double getAllTimePriceChange() {
