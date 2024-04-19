@@ -2,8 +2,11 @@ package com.stock.simulator;
 
 import com.stock.simulator.core.SimulatorEngine;
 import com.stock.simulator.core.Stock;
+import com.stock.simulator.data.DataGenerator;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.TreeMap;
 
 public class Main {
 
@@ -11,9 +14,9 @@ public class Main {
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        List<Stock> stocks = createStocks(50);  // Generate 50 stocks
-        // Add stocks to the simulator
-        stocks.forEach(engine::addStock);
+
+        DataGenerator dataGenerator = new DataGenerator(engine);
+        dataGenerator.initializeStocks();
 
         Thread simulationThread = new Thread(engine::start);
         simulationThread.start();
@@ -66,13 +69,13 @@ public class Main {
         }
     }
 
-    private static List<Stock> createStocks(int numberOfStocks) {
+    /*private static List<Stock> createStocks(int numberOfStocks) {
         List<Stock> stocks = new ArrayList<>();
         for (int i = 1; i <= numberOfStocks; i++) {
-            stocks.add(new Stock("STOCK" + i, "Company " + i, 100.0 + Math.random() * 100));
+            stocks.add(new Stock("STOCK" + i, "Company " + i, 50.0 + Math.random() * 100));
         }
         return stocks;
-    }
+    }*/
 
     private static void displayHistoricalPrices(String symbol) {
         Stock stock = engine.getStock(symbol);  // Method in SimulatorEngine to retrieve a Stock by symbol

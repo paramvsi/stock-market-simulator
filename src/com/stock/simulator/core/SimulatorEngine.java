@@ -50,7 +50,7 @@ public class SimulatorEngine {
     public void displayTopFiveStocks() {
         System.out.println("Top 5 Stocks:");
         marketStocks.values().stream()
-                .sorted(Comparator.comparingDouble(Stock::getCurrentPrice).reversed())
+                .sorted(Comparator.comparingDouble(Stock::getAllTimePriceChange).reversed())
                 .limit(5)
                 .forEach(stock -> System.out.println(stock.getSymbol() + ": " + String.format("%.2f", stock.getCurrentPrice()) + ": " + String.format("%.2f%%", stock.getAllTimePriceChange())));
     }
