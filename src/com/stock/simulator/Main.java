@@ -34,12 +34,18 @@ public class Main {
                 System.out.println("0: Show Options");
                 System.out.println("1: Register");
                 System.out.println("2: Login");
-                System.out.println("4: Exit");
+                System.out.println("4 - Display All Stocks");
+                System.out.println("5 - Display Top 5 Stocks");
+                System.out.println("6 - Display Stock History");
             } else {
                 System.out.println("0: Show Options");
                 System.out.println("3: Add Cash to Portfolio");
-                System.out.println("5: Logout");
-                System.out.println("4: Exit");
+                System.out.println("4 - Display All Stocks");
+                System.out.println("5 - Display Top 5 Stocks");
+                System.out.println("6 - Display Stock History");
+                System.out.println("7 - Show Portfolio");
+                System.out.println("9: Logout");
+                System.out.println("10: Exit");
             }
 
             System.out.print("Enter command: ");
@@ -79,6 +85,10 @@ public class Main {
                 System.out.println("Enter the stock symbol for which you want historical prices:");
                 String symbol = scanner.nextLine().trim();
                 displayHistoricalPrices(symbol);
+                break;
+            case 7:
+                if (currentUser != null) showPortfolio();
+                else System.out.println("Please login first.");
                 break;
             case 9:
                 if (currentUser != null) {
@@ -155,6 +165,29 @@ public class Main {
             double amount = scanner.nextDouble();
             currentUser.getPortfolio().addMoreCash(amount);
             System.out.println(amount + " added to " + currentUser.getUsername() + "'s portfolio.");
+        }
+    }
+
+    private static void showPortfolio() {
+        if(currentUser != null){
+            double cash = currentUser.getPortfolio().getCash();
+            Map<Stock, Integer> holdings = currentUser.getPortfolio().getHoldings();
+
+            System.out.println("Cash available :: "+cash);
+
+            if (holdings.isEmpty()) {
+                System.out.println("No stocks in portfolio.");
+            } else {
+                System.out.println("Your holdings:");
+                for (Map.Entry<Stock, Integer> entry : holdings.entrySet()) {
+                    Stock stock = entry.getKey();
+                    Integer quantity = entry.getValue();
+                    System.out.println(stock.getSymbol() + " -- " + quantity);
+                }
+            }
+
+            System.out.println("################################################");
+
         }
     }
 
