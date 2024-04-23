@@ -3,6 +3,8 @@ package com.stock.simulator;
 import com.stock.simulator.core.SimulatorEngine;
 import com.stock.simulator.core.Stock;
 import com.stock.simulator.data.DataGenerator;
+import com.stock.simulator.user.User;
+import com.stock.simulator.user.UserManager;
 
 import java.util.Map;
 import java.util.Scanner;
@@ -10,8 +12,13 @@ import java.util.TreeMap;
 
 public class Main {
 
-    private static SimulatorEngine engine = new SimulatorEngine();
-    private static Scanner scanner = new Scanner(System.in);
+    private static final SimulatorEngine engine = new SimulatorEngine();
+    private static final UserManager userManager = new UserManager();
+    private static final Scanner scanner = new Scanner(System.in);
+
+    private static User currentUser = null;
+
+    private static boolean exit = false;
 
     public static void main(String[] args) {
 
@@ -21,61 +28,136 @@ public class Main {
         Thread simulationThread = new Thread(engine::start);
         simulationThread.start();
 
-        while (true) {
-            System.out.println("\nAvailable Commands: DISPLAY_ALL, DISPLAY_TOP_5, STOP, CREATE_USER, LOGIN, ADD_CASH, BUY_STOCK");
-            System.out.print("Enter command: ");
-            String input = scanner.nextLine();
-            if ("STOP".equalsIgnoreCase(input.trim())) {
-                engine.stop();
-                break;
+
+        while (!exit) {
+            if (currentUser == null) {
+                System.out.println("0: Show Options");
+                System.out.println("1: Register");
+                System.out.println("2: Login");
+                System.out.println("4: Exit");
+            } else {
+                System.out.println("0: Show Options");
+                System.out.println("3: Add Cash to Portfolio");
+                System.out.println("5: Logout");
+                System.out.println("4: Exit");
             }
 
-            processCommand(input.trim().toUpperCase());
-            // add more commands later processCommand(input.trim().toUpperCase());
-        }
+            System.out.print("Enter command: ");
+            int command = scanner.nextInt();
+            processCommand(command);
 
-        try {
-            simulationThread.join();  // Wait for the simulation thread to finish
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.out.println("Main thread interrupted.");
         }
         scanner.close();
-        System.out.println("Simulation stopped.");
-
 
     }
 
-    private static void processCommand(String command) {
+    private static void processCommand(int command) {
 
         switch (command) {
-            case "DISPLAY_TOP_5": {
-                engine.displayTopFiveStocks();
+            case 0:
+                displayOptions(currentUser != null);
                 break;
-            }
-            case "DISPLAY_ALL": {
+            case 1:
+                if (currentUser == null) registerUser();
+                else System.out.println("Please logout first.");
+                break;
+            case 2:
+                if (currentUser == null) loginUser();
+                else System.out.println("Already logged in as " + currentUser.getUsername());
+                break;
+            case 3:
+                if (currentUser != null) addCash();
+                else System.out.println("Please login first.");
+                break;
+            case 4:
                 engine.displayAllStocks();
                 break;
-            }
-            case "STOCK_HISTORY": {
+            case 5:
+                engine.displayTopFiveStocks();
+                break;
+            case 6:
                 System.out.println("Enter the stock symbol for which you want historical prices:");
                 String symbol = scanner.nextLine().trim();
                 displayHistoricalPrices(symbol);
                 break;
-            }
-
+            case 9:
+                if (currentUser != null) {
+                    System.out.println("Logging out...");
+                    currentUser = null;
+                } else {
+                    System.out.println("No user currently logged in.");
+                }
+                break;
+            case 10:
+                engine.stop();
+                exit = true;
+                System.out.println("Exiting system.");
+                break;
             default:
-                System.out.println("Enter a valid command");
+                System.out.println("Invalid command. Please try again.");
+                break;
         }
     }
 
-    /*private static List<Stock> createStocks(int numberOfStocks) {
-        List<Stock> stocks = new ArrayList<>();
-        for (int i = 1; i <= numberOfStocks; i++) {
-            stocks.add(new Stock("STOCK" + i, "Company " + i, 50.0 + Math.random() * 100));
+
+    private static void displayOptions(boolean loggedIn) {
+        if (!loggedIn) {
+            System.out.println("Available Options:");
+            System.out.println("1 - Register a new user");
+            System.out.println("2 - Login with an existing user");
+            System.out.println("4 - Display All Stocks");
+            System.out.println("5 - Display Top 5 Stocks");
+            System.out.println("6 - Display Stock History");
+            System.out.println("10 - Exit the application");
+        } else {
+            System.out.println("Available Options:");
+            System.out.println("3 - Add cash to your portfolio");
+            System.out.println("4 - Display All Stocks");
+            System.out.println("5 - Display Top 5 Stocks");
+            System.out.println("6 - Display Stock History");
+            System.out.println("9 - Logout");
+            System.out.println("10 - Exit the application");
         }
-        return stocks;
-    }*/
+    }
+
+    private static void registerUser() {
+        System.out.print("Enter username: ");
+        String username = scanner.next();
+        System.out.print("Enter password: ");
+        String password = scanner.next();
+
+        boolean success = userManager.registerUser(username, password);
+        if (success) {
+            System.out.println("User registered successfully!");
+        } else {
+            System.out.println("Username already taken. Please choose a different username.");
+        }
+    }
+
+    private static void loginUser() {
+        System.out.print("Enter username: ");
+        String username = scanner.next();
+        System.out.print("Enter password: ");
+        String password = scanner.next();
+
+        User user = userManager.loginUser(username, password);
+        if (user != null) {
+            currentUser = user;
+            System.out.println("Login successful!");
+        } else {
+            System.out.println("Login failed. Check your username and password.");
+        }
+    }
+
+    private static void addCash() {
+        if (currentUser != null) {
+            System.out.print("Enter amount of cash to add: ");
+            double amount = scanner.nextDouble();
+            currentUser.getPortfolio().addMoreCash(amount);
+            System.out.println(amount + " added to " + currentUser.getUsername() + "'s portfolio.");
+        }
+    }
+
 
     private static void displayHistoricalPrices(String symbol) {
         Stock stock = engine.getStock(symbol);  // Method in SimulatorEngine to retrieve a Stock by symbol
