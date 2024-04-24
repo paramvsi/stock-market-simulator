@@ -44,6 +44,7 @@ public class Main {
                 System.out.println("5 - Display Top 5 Stocks");
                 System.out.println("6 - Display Stock History");
                 System.out.println("7 - Show Portfolio");
+                System.out.println("8 - Buy Stock");
                 System.out.println("9: Logout");
                 System.out.println("10: Exit");
             }
@@ -90,6 +91,11 @@ public class Main {
                 if (currentUser != null) showPortfolio();
                 else System.out.println("Please login first.");
                 break;
+
+            case 8:
+                if (currentUser != null) buyStock();
+                else System.out.println("Please login first.");
+                break;
             case 9:
                 if (currentUser != null) {
                     System.out.println("Logging out...");
@@ -125,6 +131,8 @@ public class Main {
             System.out.println("4 - Display All Stocks");
             System.out.println("5 - Display Top 5 Stocks");
             System.out.println("6 - Display Stock History");
+            System.out.println("7 - Show Portfolio");
+            System.out.println("8 - Buy Stock");
             System.out.println("9 - Logout");
             System.out.println("10 - Exit the application");
         }
@@ -169,11 +177,11 @@ public class Main {
     }
 
     private static void showPortfolio() {
-        if(currentUser != null){
+        if (currentUser != null) {
             double cash = currentUser.getPortfolio().getCash();
             Map<Stock, Integer> holdings = currentUser.getPortfolio().getHoldings();
 
-            System.out.println("Cash available :: "+cash);
+            System.out.println("Cash available :: " + cash);
 
             if (holdings.isEmpty()) {
                 System.out.println("No stocks in portfolio.");
@@ -188,6 +196,16 @@ public class Main {
 
             System.out.println("################################################");
 
+        }
+    }
+
+    private static void buyStock() {
+        if (currentUser != null) {
+            System.out.print("Enter stock to buy: ");
+            String symbol = scanner.next();
+            Stock stock = engine.getStock(symbol);
+            currentUser.getPortfolio().buyStock(stock, 1, stock.getCurrentPrice());
+            System.out.println("Stock purchased successfully");
         }
     }
 
