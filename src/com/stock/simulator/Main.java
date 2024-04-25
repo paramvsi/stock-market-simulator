@@ -30,24 +30,7 @@ public class Main {
 
 
         while (!exit) {
-            if (currentUser == null) {
-                System.out.println("0: Show Options");
-                System.out.println("1: Register");
-                System.out.println("2: Login");
-                System.out.println("4 - Display All Stocks");
-                System.out.println("5 - Display Top 5 Stocks");
-                System.out.println("6 - Display Stock History");
-            } else {
-                System.out.println("0: Show Options");
-                System.out.println("3: Add Cash to Portfolio");
-                System.out.println("4 - Display All Stocks");
-                System.out.println("5 - Display Top 5 Stocks");
-                System.out.println("6 - Display Stock History");
-                System.out.println("7 - Show Portfolio");
-                System.out.println("8 - Buy Stock");
-                System.out.println("9: Logout");
-                System.out.println("10: Exit");
-            }
+            displayOptions(currentUser != null);
 
             System.out.print("Enter command: ");
             int command = scanner.nextInt();
@@ -97,6 +80,10 @@ public class Main {
                 else System.out.println("Please login first.");
                 break;
             case 9:
+                if (currentUser != null) sellStock();
+                else System.out.println("Please login first.");
+                break;
+            case 11:
                 if (currentUser != null) {
                     System.out.println("Logging out...");
                     currentUser = null;
@@ -118,24 +105,33 @@ public class Main {
 
     private static void displayOptions(boolean loggedIn) {
         if (!loggedIn) {
-            System.out.println("Available Options:");
-            System.out.println("1 - Register a new user");
-            System.out.println("2 - Login with an existing user");
-            System.out.println("4 - Display All Stocks");
-            System.out.println("5 - Display Top 5 Stocks");
-            System.out.println("6 - Display Stock History");
-            System.out.println("10 - Exit the application");
+            notLoggedInOptions();
         } else {
-            System.out.println("Available Options:");
-            System.out.println("3 - Add cash to your portfolio");
-            System.out.println("4 - Display All Stocks");
-            System.out.println("5 - Display Top 5 Stocks");
-            System.out.println("6 - Display Stock History");
-            System.out.println("7 - Show Portfolio");
-            System.out.println("8 - Buy Stock");
-            System.out.println("9 - Logout");
-            System.out.println("10 - Exit the application");
+            loggedInOptions();
         }
+    }
+
+    private static void notLoggedInOptions() {
+        System.out.println("Available Options:");
+        System.out.println("1 - Register a new user");
+        System.out.println("2 - Login with an existing user");
+        System.out.println("4 - Display All Stocks");
+        System.out.println("5 - Display Top 5 Stocks");
+        System.out.println("6 - Display Stock History");
+        System.out.println("10 - Exit the application");
+    }
+
+    private static void loggedInOptions() {
+        System.out.println("Available Options:");
+        System.out.println("3 - Add cash to your portfolio");
+        System.out.println("4 - Display All Stocks");
+        System.out.println("5 - Display Top 5 Stocks");
+        System.out.println("6 - Display Stock History");
+        System.out.println("7 - Show Portfolio");
+        System.out.println("8 - Buy Stock");
+        System.out.println("9 - Sell Stock");
+        System.out.println("11 - Logout");
+        System.out.println("10 - Exit the application");
     }
 
     private static void registerUser() {
@@ -206,6 +202,18 @@ public class Main {
             Stock stock = engine.getStock(symbol);
             currentUser.getPortfolio().buyStock(stock, 1, stock.getCurrentPrice());
             System.out.println("Stock purchased successfully");
+        }
+    }
+
+    private static void sellStock() {
+        if (currentUser != null) {
+            System.out.print("Enter stock to sell: ");
+            String symbol = scanner.next();
+            System.out.print("Enter qty to sell: ");
+            int qty = scanner.nextInt();
+            Stock stock = engine.getStock(symbol);
+            currentUser.getPortfolio().sellStock(stock, qty, stock.getCurrentPrice());
+            System.out.println("Stock sold successfully");
         }
     }
 
